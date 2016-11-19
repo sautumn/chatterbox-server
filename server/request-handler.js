@@ -21,7 +21,7 @@ var defaultCorsHeaders = {
 };
 
 var message = {'results': [{'username': 'john smith', 'text': 'whatup', 'roomname': 'lobby'}] };
-var storagedData = {'results': []};
+var storagedData = {'results': [{'username': 'john smith', 'text': 'whatup', 'roomname': 'lobby'}] };
 module.exports = {
 
   requestHandler: function(request, response) {
