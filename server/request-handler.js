@@ -21,7 +21,7 @@ var defaultCorsHeaders = {
 };
 
 var message = {'results': [{'username': 'john smith', 'text': 'whatup', 'roomname': 'lobby'}] };
-var storagedData = {'results': [{'username': 'john smith', 'text': 'whatup', 'roomname': 'lobby'}] };
+var storagedData = {'results': [] }; //dummy data for chatterbox
 module.exports = {
 
   requestHandler: function(request, response) {
@@ -80,7 +80,7 @@ module.exports = {
           body += data;
         });
         request.on('end', function() {
-          var index = storagedData.indexOf(JSON.parse(body));
+          var index = storagedData.results.indexOf(JSON.parse(body));
           if (index > 0) {
             storagedData[index] = JSON.parse(body);
           } else {
