@@ -38,7 +38,7 @@ describe('Node Server Request Listener Function', function() {
     var res = new stubs.response();
 
     handler.requestHandler(req, res);
-
+    console.log(res._data);
     var parsedBody = JSON.parse(res._data);
     expect(parsedBody).to.be.an('object');
     expect(res._ended).to.equal(true);
