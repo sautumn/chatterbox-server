@@ -73,5 +73,36 @@ describe('server', function() {
     });
   });
 
+///////////////////////////////////////////////
+
+  it('should accept PUT requests to /classes/messages', function(done) {
+    var requestParams = {method: 'PUT',
+      uri: 'http://127.0.0.1:3000/classes/messages',
+      json: {
+        username: 'Ricky Bobby',
+        message: 'Second place is a first place loser!'}
+    };
+
+    request(requestParams, function(error, response, body) {
+      expect(response.statusCode).to.equal(201);
+      
+    });
+    done();
+  });
+
+  it('should accept DELETE requests to /classes/messages', function(done) {
+    var requestParams = {method: 'DELETE',
+      uri: 'http://127.0.0.1:3000/classes/messages',
+      json: {
+        username: 'Ricky Bobby',
+        message: 'Second place is a first place loser!'}
+    };
+
+    request(requestParams, function(error, response, body) {
+      expect(response.statusCode).to.equal(204);
+      
+    });
+    done();
+  });
 
 });

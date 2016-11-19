@@ -42,31 +42,82 @@ module.exports = {
   // console.logs in your code.
     console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
-    // The outgoing status.
-    var statusCode = 200;
-
-    // See the note below about CORS headers.
     var headers = defaultCorsHeaders;
+    var statusCode = 200;
 
     if (request.url !== '/classes/messages') {
       response.writeHead(404, headers);
       response.end();
-    } else if (request.method === 'GET' && request.url === '/classes/messages' || request.url === '/classes/room') {
-      headers['Content-Type'] = 'application/json';
-      response.writeHead(statusCode, headers);
-      response.end(JSON.stringify(storagedData));
-    } else if (request.method === 'POST') {
-      headers['Content-Type'] = 'application/json';
-      response.writeHead(201, headers);
+    }
 
-      var body = '';
-      request.on('data', function(data) {
-        body += data;
-      });
-      request.on('end', function() {
-        storagedData.results.push(JSON.parse(body));
-      });
-      response.end();
+    var methods = {
+      'GET': function() {
+        if (request.url === '/classes/messages' || request.url === '/classes/room') {
+          headers['Content-Type'] = 'application/json';
+          response.writeHead(statusCode, headers);
+          response.end(JSON.stringify(storagedData));
+        }
+      },
+      'POST': function() {
+        headers['Content-Type'] = 'application/json';
+        response.writeHead(201, headers);
+
+        var body = '';
+        request.on('data', function(data) {
+          body += data;
+        });
+        request.on('end', function() {
+          storagedData.results.push(JSON.parse(body));
+        });
+        response.end();
+      },
+      'PUT': function() {
+        headers['Content-Type'] = 'application/json';
+        response.writeHead(201, headers);
+
+        var body = '';
+        request.on('data', function(data) {
+          body += data;
+        });
+        request.on('end', function() {
+          var index = storagedData.indexOf(JSON.parse(body));
+          if (index > 0) {
+            storagedData[index] = JSON.parse(body);
+          } else {
+            storagedData.results.push(JSON.parse(body));
+          }
+        });
+        response.end();
+      },
+      'DELETE': function() {
+        
+        headers['Content-Type'] = 'application/json';
+        response.writeHead(204, headers);
+
+        var body = '';
+        request.on('data', function(data) {
+          body += data;
+        });
+        request.on('end', function() {
+          var index = storagedData.indexOf(JSON.parse(body));
+          if (index < 0) {
+            storagedData.splice(index, 1);
+          }
+        });
+        response.end();
+
+      },
+      'OPTIONS': function() {
+        headers['Content-Type'] = 'application/json';
+        response.writeHead(200, headers);
+        response.end('Allow ' + defaultCorsHeaders['access-control-allow-methods']);
+      }
+    };
+
+    for (var key in methods) {
+      if (request.method === key) {
+        methods[request.method]();
+      }
     }
 
     // Tell the client we are sending them plain text.
